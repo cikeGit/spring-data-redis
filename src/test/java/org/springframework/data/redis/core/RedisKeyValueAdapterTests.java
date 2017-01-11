@@ -287,7 +287,10 @@ public class RedisKeyValueAdapterTests {
 		template.opsForSet().add("persons:firstname:rand", "1");
 		template.opsForSet().add("persons:1:idx", "persons:firstname:rand");
 
-		Thread.sleep(2000);
+		int iterationCount = 0;
+		while (template.hasKey("persons:1") && iterationCount++ < 3) { // ci might be a little slow
+			Thread.sleep(2000);
+		}
 
 		assertThat(template.hasKey("persons:1"), is(false));
 		assertThat(template.hasKey("persons:firstname:rand"), is(false));
